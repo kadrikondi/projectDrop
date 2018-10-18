@@ -8,17 +8,19 @@ module.exports={
     verifyToken:
     (req, res, next)=> {
 
-    const token = req.headers['x-access-token'];
+    const headertoken= req.headers['authorization'];
+     token =headertoken.split(' ')[1]
     if (!token){
         res.json({auth: false,
              message: 'No token provided.'}) }else{
-    
-    jwt.verify(token, config.secret, (err, decoded)=> {
+    const secret= process.env.secret
+    jwt.verify(token, secret, (err, decoded)=> {
       if (err){
           res.json({ auth: false, 
         message: 'Failed to authenticate token.' });
           }
           req.userId = decoded.id;
+      
           next();
       
     });

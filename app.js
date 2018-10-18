@@ -1,6 +1,10 @@
 const express= require('express')
+const passport = require('passport')
 const mongoose= require('mongoose')
 const bodyPaser= require('body-parser')
+const path = require('path')
+require('dotenv').config()
+
 const app = express();
 const router = require('./routes/index')
 
@@ -12,7 +16,19 @@ app.use(bodyPaser.json())
 app.use('/' , router)
 
 
-const port = 8000
+
+// Passport middleware
+app.use(passport.initialize());
+
+// Passport Config
+require('./config/passport')(passport);
+
+//initialize public folder
+app.use(express.static('uploadProjects'))
+
+
+console.log()
+const port = process.env.PORT|| 8000;
 
 app.get('*', (req, res) => {
     res.send(`<h1>ERORR 404, PAGE NOT FOUND</h1>`)
@@ -21,7 +37,7 @@ app.get('*', (req, res) => {
 
 app.listen(port,()=>{
     
-mongoose.connect('mongodb://localhost/projectdrop')
+mongoose.connect('mongodb://localhost:27017/projectdrop',{ useNewUrlParser: true })
     .then(()=>{
 
         console.log("mongodb connected")
