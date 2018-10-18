@@ -21,11 +21,48 @@ const projectSchema = new Schema({
     year:{
         type:String
     },
-    projectDoc:{
+    projectdoc:{
         type:String
     },
     summary:{
         type:String
+    },
+    name:{tyepe: String
+    }, 
+    avatar:{type:String
+    },
+
+    like:[{
+        user:{
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+
+    }
+}], 
+    comment:[
+        {
+       user: {
+        type: Schema.Types.ObjectId,
+        ref: 'Users'
+    }, 
+    
+     name:{
+         type:String
+     },
+     avatar:{
+         type:String
+     },
+     date:{
+         type:Date,
+         default: Date.now
+
+     }
+    }],
+    
+    date:{
+        type:Date,
+        default: Date.now
+
     }
     
 
