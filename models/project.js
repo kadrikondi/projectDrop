@@ -32,20 +32,22 @@ const projectSchema = new Schema({
     avatar:{type:String
     },
 
-    like:[{
+    likes:[{
         user:{
         type: Schema.Types.ObjectId,
         ref: 'Users'
 
     }
 }], 
-    comment:[
-        {
+    comments:[{
        user: {
         type: Schema.Types.ObjectId,
         ref: 'Users'
     }, 
-    
+      text:{
+          type:String,
+          require:true,
+      },
      name:{
          type:String
      },
@@ -55,8 +57,7 @@ const projectSchema = new Schema({
      date:{
          type:Date,
          default: Date.now
-
-     }
+        }
     }],
     
     date:{
