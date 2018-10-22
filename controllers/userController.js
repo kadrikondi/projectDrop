@@ -88,6 +88,8 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getUsers = async (req,res)=>{
  const users = await Users.find()
+   const some = await Users.findOne({_id:req.user.id.toString()})
+   console.log(some)
  if(!users) return res.json(`error users not found`)
  res.json({user:users})
 }
