@@ -28,7 +28,7 @@ const fileFilter = (req, file, cb)=>{
     //check extname
     const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
     const mimetype =filetypes.test(file.mimetype)
-    if(filetypes && mimetype){
+    if(mimetype && extname){
         return cb(null,true)
     }else{
        
@@ -47,7 +47,7 @@ const fileFilter = (req, file, cb)=>{
                             limits:{fileSize:1024*1024*10},
                             fileFilter:fileFilter
                 
-    }).single("projectDoc")
+    }).single('projectdoc')
 
 
 
@@ -68,13 +68,24 @@ router.delete('/delete/:id', userController.DeleteOne)
 //project controller
 
 //project route controller
-router.route('/project')
-.post(upload,projectController.createProject)
+router.route('/uploadproject')
+             .post(auth,upload,projectController.createProject)
 router.route('/updateproject/:id')
-         .put(projectController.updateProject)
- router.route('/project')
-         .get(projectController.getProject)
-router.delete('/deletep/:id', projectController.Deleteproject)
+             .put(projectController.updateProject)
+router.route('/projects')
+             .get(projectController.getAllProjects)
+router.route('/project/:id')
+            .get(projectController.getSingleProject)
+router.route('/project/like/:id')
+            .post(auth,projectController.likeProject)
+router.route('/project/unlike/:id')
+            .post(auth,projectController.unLikeProject)        
+router.route('/project/comment/:id')
+            .post(auth,projectController.createComment)
+ router.route('/project/comment/:id/:comment_id')
+            .delete(auth,projectController.deleteComment)
+
+router.delete('/deleteproject/:id', auth, projectController.Deleteproject)
 
 
 
