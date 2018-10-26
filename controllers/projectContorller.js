@@ -5,41 +5,90 @@ const fs = require('fs')
 const Users = require('../models/user')
 const upload =require('../routes/index')
 const multer = require('multer')
+const path = require('path')
 
 
 
 //@controller: create a project
 //@acess: private
 //@route: project
-
+const upoload =require('../routes/index')
 exports.createProject = async(req,res)=>{
+    // if(req.file==undefined || req.file=='')
+    //   return  res.status(403).json({Error:'No file selected'})
+
 
     const body = req.body
-    if(!body.topic &&!body.department && !body.school &&!body.year && !body.projectDoc){
-        res.json({must:`empty field`})
+    if(!body.topic &&!body.department && !body.school &&!body.year){
+        res.json({message:`empty field`})
 
 
 }else{
+    
 
 
  const newproject  =await new project({
+     
         topic:body.topic,
         department:body.department,
         school:body.school,
         year:body.year,
-        user:req.user.id,
-         name:body.name,
-        avatar:body.avatar,
-        projectdoc:req.file.path
+        summary:body.summary,
+        // user:req.user.id,
+        //  name:body.name,
+        // avatar:body.avatar,
+        // projectdoc:req.file.path
     }).save()
     
-    res.json({message:'upload successfull',project: newproject})
+    res.json({message:'success now upload',project: newproject})
 }
     
 
 }
 
 
+//@controller: upload project docs
+//@acess: private
+//@route: /upload
+exports.UploadProject= async(req,res)=>{
+    if(req.file==undefined || req.file==''){
+        res.status(403).json({message:'No file selected'})
+
+    }else{
+   var cloudinary =require('cloudinary')
+        var file = req.file.path
+        console.log(file)
+        const result = await cloudinary.v2.uploader.upload(file,{ resource_type: "raw" })
+        const fname =  result.original_filename
+        let fileUrl = result.secure_url
+        let publicId = result.public_id
+        const projectup = await project.findByIdAndUpdate(req.params.id,{
+            projectdoc:fileUrl
+        }, {new:true})
+        console.log(project.projectdoc)
+        res.json({
+        projects:projectup,
+
+        message:'Success: Picture uploaded successfully'
+        //imgUrl:imgUrl
+        })
+
+        // const upload= await project.findOne({_id: req.params.id})
+        // upload.projectdoc=req.file.path
+        // // const upload= await project.findOneAndUpdate(req.params.id,{
+        //     projectdoc:req.file.path
+
+        // },{new:true})
+        // res.json({Message:"success upload", upload})
+    }
+
+// catch(err){
+//     console.log(err)
+//     res.status(403).json({error:"catch Errorr"})
+
+
+// }
+}
 
 //@controller: get all project
 //@acess: public

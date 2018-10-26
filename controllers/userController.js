@@ -88,8 +88,6 @@ exports.updateUserProfile = async (req, res) => {
 
 exports.getUsers = async (req,res)=>{
  const users = await Users.find()
-   const some = await Users.findOne({_id:req.user.id.toString()})
-   console.log(some)
  if(!users) return res.json(`error users not found`)
  res.json({user:users})
 }
@@ -98,10 +96,13 @@ exports.getUser = async(req,res)=>{
 
   // req.userId= decoded.id
     await Users.findById(req.userId,{password:0},(error,user)=>{
-if(error) return res.status(500).json({error:`there was a problem find the user`});
-if(!user) return res.status(400).json(`user Not Found`)
-res.status(200).json({user:user});
-})
+          if(error) return res.status(500).json({
+            error:`there was a problem find the user`
+          });
+          if(!user) return res.status(400).json(`user Not Found`)
+          res.status(200).json({
+            user:user});
+          })
 
 }
 
