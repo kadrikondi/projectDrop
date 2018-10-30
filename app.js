@@ -2,6 +2,7 @@ const express= require('express')
 const passport = require('passport')
 const mongoose= require('mongoose')
 const bodyPaser= require('body-parser')
+const cors = require('cors')
 const path = require('path')
 require('dotenv').config()
 
@@ -10,7 +11,10 @@ const router = require('./routes/index')
 
 
 
+app.use(cors())
 
+//initialize public folder
+app.use('/uploadproject', express.static('uploadProjects'))
 app.use(bodyPaser.urlencoded({extended:true}))
 app.use(bodyPaser.json())
 app.use('/' , router)
@@ -23,8 +27,6 @@ app.use(passport.initialize());
 // Passport Config
 require('./config/passport')(passport);
 
-//initialize public folder
-app.use(express.static('uploadProjects'))
 
 
 console.log()
