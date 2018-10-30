@@ -2,39 +2,56 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../config/config');
 const Users = require('../models/user')
+const emailExistence = require('email-existence')
+
  
 
 
 //creat user
 exports.posttRegisterUser= async(req,res)=>{
-
-  
-        
         const body=req.body;
-        if(!body.username && !body.email &&!body.password){
-          res.json(`please fill the require field`)
-        }else{
+        if(!body.username && !body.email &&!body.password &&!body.gender){
+          res.json({message:`please fill the require field`})
+        }else if(body.password < 6){
+          res.json({message:`password must up to six character`})
+            
+        }else if(body.username < 3 || body.username >20){
+          res.json({message:`username can not less than 3 character or more than 20 character`})
+        }else{ 
 
-            const hashedPassword = await bcrypt.hashSync(req.body.password, 10);
-            const {name ,email,password}=body
-            const foundUser = await Users.findOne({email});
-            if(foundUser){
-              return res.status(403).json({error:`user already exist`})
-            }
-       await Users.create({
-          name : req.body.name,
-          email : req.body.email,
-          password : hashedPassword
-        },
-         (err, user)=> {
-          if (err) return res.status(500).send("There was a problem registering the user.")
-      
+          await emailExistence.check(req.body.email,async(err,response)=>{
+            if(response===false){
+              res.json({message:`you enter an invalid maill`})}
+          if(response){       
+            const hashedPassword = await bcrypt.hashSync(req.body.password,10)
+                  const{name ,email,password}=body
+                  const foundUser = await Users.findOne({email:req.body.email});
+                  if(foundUser){
+                    return res.status(403).json({error:`user already exist`})} 
+            
+
+
+                  await Users.create({
+                    name : req.body.name,
+                    email : req.body.email,
+                    gender : req.body.gender,
+                    password : hashedPassword,
+                  },
+                  (err, user)=> {
+                    if (err) return res.status(500).send("There was a problem registering the user.")
+                
+                    
+                
+                    res.status(200).json({ auth: true, message:'successfully register',user:user });
+
+                  
+                  }); 
+        
+                }
+
+          })  
           
-      
-          res.status(200).json({ auth: true, message:'successfully register',user:user });
-        }); 
-      
-      }
+                }
 
   
 }

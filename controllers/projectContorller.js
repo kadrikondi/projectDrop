@@ -40,7 +40,7 @@ exports.createProject = async(req,res)=>{
         // projectdoc:req.file.path
     }).save()
     
-    res.json({message:'success now upload',project: newproject})
+    res.json({message:'success now upload',id:newproject.id,project: newproject})
 }
     
 
@@ -51,7 +51,7 @@ exports.createProject = async(req,res)=>{
 //@acess: private
 //@route: /upload
 exports.UploadProject= async(req,res)=>{
-    if(req.file==undefined || req.file==''){
+try{    if(req.file==undefined || req.file==''){
         res.status(403).json({message:'No file selected'})
 
     }else{
@@ -67,9 +67,10 @@ exports.UploadProject= async(req,res)=>{
         }, {new:true})
         console.log(project.projectdoc)
         res.json({
-        projects:projectup,
+        project:projectup,
 
-        message:'Success: Picture uploaded successfully'
+        message:'Project uploaded successfully',
+        success:true
         //imgUrl:imgUrl
         })
 
@@ -81,13 +82,13 @@ exports.UploadProject= async(req,res)=>{
         // },{new:true})
         // res.json({Message:"success upload", upload})
     }
+}
+catch(err){
+    console.log(err)
+    res.status(403).json({error:"catch Errorr"})
 
-// catch(err){
-//     console.log(err)
-//     res.status(403).json({error:"catch Errorr"})
 
-
-// }
+}
 }
 
 //@controller: get all project
@@ -95,7 +96,7 @@ exports.UploadProject= async(req,res)=>{
 exports.getAllProjects = async (req,res)=>{
     const allproject = await project.find()
                         .sort({date:-1})
-    if(!allproject) return res.json(`error users not found`)
+    if(!allproject) return res.json({message:`error users not found`})
     res.json({allproject:allproject})
    }
 
