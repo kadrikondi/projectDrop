@@ -8,6 +8,7 @@ const Users = mongoose.Schema({
     name:{type:String},
     school:{type:String},
     phone:{type:String},
+    gender:{type:String},
     department:{type:String},
     join:  {type:Date, Default:Date.now() },
 

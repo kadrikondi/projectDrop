@@ -9,7 +9,7 @@ const projectSchema = new Schema({
     },
     topic:{
         type:String,
-        required:true
+        // required:true
 
     },
     department:{
