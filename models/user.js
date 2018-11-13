@@ -10,6 +10,9 @@ const Users = mongoose.Schema({
     phone:{type:String},
     gender:{type:String},
     department:{type:String},
+    city:{type:String},
+    bio:{type:String},
+    avater:{type:String},
     join:  {type:Date, Default:Date.now() },
 
     
