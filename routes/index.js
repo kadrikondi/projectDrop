@@ -9,6 +9,7 @@ const {verifyToken}=require('../auth/verifyToken')
 const pro =require('./proroute')
 const jwt=require('jsonwebtoken')
 const passport = require('passport')
+// const {cloudinaryApi} =require('../config/cloudinary')
 const projectController =require('../controllers/projectContorller')
 
 //file upload with multer
@@ -57,18 +58,54 @@ const multer = require('multer')
 const auth =passport.authenticate('jwt',{session:false})
 router.post('/register' ,userController.posttRegisterUser);
 router.post('/login',userController.postLogin);
-router.put('/update/:id',auth, userController.updateUserProfile)
+router.put('/user/update/:id',auth, userController.updateUserProfile)
 router.get('/users',userController.getUsers)
-router.route('/user')
-.get(verifyToken, userController.getUser)
+router.route('/user/get/:id')
+.get(auth,userController.getUser)
+router.get('/userprofile', userController.userProfile)
 
 router.delete('/delete/:id', userController.DeleteOne)
+
+ //user pic
+    //Using cloudinary
+    
+    const userStorage = multer.diskStorage({
+        filename:function(req, file, cb){
+            cb(null, Date.now()+file.originalname)
+        }
+    })
+    const imageFilter =function(req, file, cb){
+        if(!file.originalname.match(/\.(jpeg|jpg|png)$/i)){
+            //return cb(new Error('Only image files are allowed'), false)
+            return cb('Only image files are allowed', false)
+        }
+        else{
+            cb(null,true)
+        }
+    }
+    uploadpic = multer({
+        storage:userStorage,
+        fileFilter:imageFilter
+    }).single('avater')
+    var userconfiq = require('../config/userconfiq')
+    const cloudinaryApi = require('cloudinary')
+       cloudinaryApi.config({
+        cloud_name: userconfiq.cloud_name,
+        api_key : userconfiq.api_key,
+        api_secret : userconfiq.api_secret
+        
+    })
+    console.log(userconfiq.cloud_name)
+
+
+
+ router.put('/user/updatepic/:id',uploadpic,userController.uploadProfileAvater)
+
 
 // router.get('/logout',authController.logOut)
 
 
 //project controller
-
 // //project route controller
 router.route('/project/post')
              .post(projectController.createProject)
@@ -78,7 +115,7 @@ router.route('/project/update/:id')
 router.route('/project/get')
              .get(projectController.getAllProjects)
 router.route('/project/get/:id')
-            .get(projectController.getSingleProject)
+            .get(auth,projectController.getSingleProject)
 router.route('/project/like/:id')
             .post(auth,projectController.likeProject)
 router.route('/project/unlike/:id')

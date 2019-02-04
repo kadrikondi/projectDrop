@@ -10,7 +10,6 @@ const app = express();
 const router = require('./routes/index')
 
 
-
 app.use(cors())
 
 //initialize public folder

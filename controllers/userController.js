@@ -8,6 +8,7 @@ const emailExistence = require('email-existence')
 
 
 //creat user
+//route: /register
 exports.posttRegisterUser= async(req,res)=>{
         const body=req.body;
         if(!body.name && !body.email &&!body.password &&!body.gender){
@@ -57,6 +58,8 @@ exports.posttRegisterUser= async(req,res)=>{
 }
 
 
+// login user
+// route: /login
 exports.postLogin=(req,res)=>{ 
   const body =req.body;
   if(!body.email && !body.password){
@@ -70,7 +73,11 @@ exports.postLogin=(req,res)=>{
 
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).json({ auth: false, token: null , message:`password incorect`});
-          const secret =process.env.secret
+
+
+
+
+          const secret = config.secret ||process.env.secret
           const payload = {id:user.id, name:user.name,email:user.email,school:user.school,department:user.department,phone:user.phone,city:user.city,bio:user.bio,avater:user.avater}
         const token = jwt.sign( payload, 
           secret, 
@@ -96,6 +103,9 @@ exports.postLogin=(req,res)=>{
 }
 }
 
+
+// update profile
+// route: /user/update/:id
 exports.updateUserProfile = async (req, res) => {
   const user = await Users.findOne({_id: req.params.id})
   user.name = req.body.name || user.name
@@ -109,8 +119,8 @@ exports.updateUserProfile = async (req, res) => {
   res.json({message:'profile updated', success:true, user :user})
 }
 
-
-
+// upload pics
+//route:/user/updatepic/:id
 exports.uploadProfileAvater= async(req, res) => {
   try{
         if(req.file == undefined || req.file == ''){
@@ -145,13 +155,15 @@ exports.uploadProfileAvater= async(req, res) => {
 
 
 
+//user profile
+//route: /userprofile
 
 exports.userProfile =  async (req, res) => {
   try{const User = await Users.find()
   const token = await req.headers['authorization'].split(" ")[1]
   //const decode = await jwt.verify(token, config.secret)
   
-  const decode = await jwt.verify(token, process.env.secret || config.secret)
+  const decode = await jwt.verify(token,  config.secret||process.env.secret)
   let name = decode.name
   let id = decode.id
   let email = decode.email
@@ -162,6 +174,7 @@ exports.userProfile =  async (req, res) => {
   let bio = decode.bio
   let avater=decode.avater
   res.json({
+    message:'success',
     user:'single',
       id:id,
       name:name,
@@ -172,19 +185,33 @@ exports.userProfile =  async (req, res) => {
       city:city,
       bio:bio,
       avater:avater
+     
+
   })}
   catch(err){
-    res.json(err)
+    res.json({err , message:'sorry you need to sign in'})
   }
 }
 
-
+//get all users 
+//route:/users
 exports.getUsers = async (req,res)=>{
- const users = await Users.find()
- if(!users) return res.json(`error users not found`)
- res.json({user:users})
+  try{
+const users = await Users.find()
+ if(!users) return res.json({message:`error users not found`})
+ res.json({user:users})}
+
+
+ catch(err){
+   res.json({err :err, message:'error in find users'})
+
 }
 
+}
+
+
+//get singleUser
+//route:user/get/:id
 exports.getUser = async(req,res)=>{
 
   // req.userId= decoded.id
