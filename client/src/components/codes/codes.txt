@@ -1,0 +1,40 @@
+//getting user in a component
+
+
+    //bind get users
+    this.getOneUser= this.getOneUser.bind(this)
+
+    //on componentdidmount
+        const user = await this.getOneUser(this.props.match.params.id)
+    }
+async getOneUser(id){
+    
+    const token = await window.localStorage.getItem('token')
+
+ 
+    const user = await fetch(`http://localhost:8000/user/get/${id}`,{
+        method:'GET',
+  headers:{
+      'Accept':'application/json',
+      'Content-Type':'application/json',
+     'Authorization':`${token}`
+  }
+
+  })
+  .then(res=>res.json())
+  .then(res=>{ 
+      this.setState({
+          name:res.user.name,
+          email:res.user.email,
+          info:res.message,
+          id:res.user.id
+
+
+      })
+   const l =   localStorage.setItem('updateuserId', JSON.stringify(res.user.id))
+      console.log('us '+ res.message+this.state.name + l) })
+
+    
+
+
+    }

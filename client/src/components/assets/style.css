@@ -1,0 +1,36 @@
+.navlink{
+    width: 22%;
+    height: 10%;
+    border-radius: 80px;
+    background-color:lightcoral;
+    /* background-image: url('../assets/img/project.jpeg'); */
+    margin: 0% auto;
+    color: white;
+}
+
+@media screen and (max-width:600px){
+    .navlink{
+        width:100%;
+        height: 10%;
+        border-radius: 0px;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+}
+.dlink{
+    background-color: rgb(236, 101, 101);
+    font-family: cursive;
+    width: 100%;
+    height: auto;
+    padding: 10%;
+    color: white;
+
+}
+.dlink:hover{
+ background-color: lightcoral;
+}
+.icon{
+    font-size: 50px;
+    cursor: pointer;
+    color: white;
+}

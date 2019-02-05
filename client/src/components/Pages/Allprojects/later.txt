@@ -1,0 +1,177 @@
+const user = await fetch(`http://localhost:8000/user/get/5bc9bce238a67f0f34365f7c`, token,{
+  headers:{
+      'Accept':'application/json',
+      'Content-Type':'application/json',
+  }
+      
+  })
+  .then(res=>res.json())
+  .then(res=>console.log('us '+ res.message))
+
+
+
+
+
+{/* <!-- Card Regular */}
+    {/* <div className="card card-cascade"} style={{width:"200px" ,height:"400px"}> */}
+      
+    
+      {/* <!-- Card image --> */}
+      {/* <div className="view view-cascade overlay">
+        <img className="card-img-top" src={pix}alt="Card image cap" />
+        <a>
+          <div className="mask rgba-white-slight"></div>
+        </a>
+         </div> */}
+    
+      {/* <!-- Card content --> */}
+      {/* <div className="card-body card-body-cascade text-center"> */}
+    
+        {/* <!-- Title --> */}
+        {/* <h6 className="card-title"><strong>Online Booking System</strong></h6>
+        
+        <p className="font-weight-normal indigo-text ">Computer Science </p> */}
+             {/* <!-- Text --> */}
+        {/* <p className="card-text">
+        Upload by <i>Icemiles</i>
+        <br/>
+        10 <mark> download</mark>
+        <br/>
+          <span className="mdi mdi-approval"></span>&nbsp; &nbsp;<span className="mdi mdi-eye"> </span>&nbsp; <Link to="/projectD" className="mdi mdi-cloud-print-outline"></Link>
+        </p>
+    
+        <Link  to="/projectD"type="button" className="btn  btn-sm btn-primary">Detail</Link>
+        
+        
+      </div>
+    
+         </div> */}
+    
+
+
+
+
+
+         {/* modal */}
+
+
+{/* <!-- Modal update profile --> */}
+<div className="modal fade" id="updateProfile" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div className="modal-dialog modal-lg" role="document">
+    <div className="modal-content">
+      <div className="modal-header">
+        <h5 className="modal-title" id="exampleModalLabel">Update Profile</h5>
+        <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div className="modal-body">
+
+      
+
+      
+            {/* edit form */}
+            
+
+                <div className="form-row" >
+                
+                            <form className="col-md-6">
+                            
+                            <div className="form-group ">
+                            
+                                <input type="text" className="form-control" id="Name" placeholder="Name" value={name} onChange={this.handleUpdateName} />
+                            </div>
+                            <div className="form-group">
+                                <input type="email" className="form-control" id="inputEmail4" placeholder="Email" value={email} onChange={this.handleUpdateEmail}/>
+                            </div>
+                            
+                            
+                            
+                            <div className="form-group">
+                            
+                            <input type="tel" className="form-control" id="inputPhone" placeholder="Tel Phone Number" value={phone}  onChange={this.handleUpdatePhone}/>
+                            </div>
+                            <div className="form-group">
+
+                            <input type="text" className="form-control" id="inputSchool" placeholder="School" value={school} onChange={this.handleUpdateSchool}/>
+                            </div>
+                        
+                            
+                            <div className="form-group">
+                                <input type="text" className="form-control" id="department" placeHolder="department" value={department} onChange={this.handleUpdateDepartment}/>
+                            </div>
+                            <div className="form-group">
+                                
+                                    <input type="text" className="form-control" id="city" placeholder="city" value={city} onChange={this.handleUpdateCity} />
+                            </div>
+                            <div className="form-group">
+                                    
+                                    <textarea className="form-control" placeholder="Bio" onChange={this.handleUpdateBio}  >bio</textarea>
+                            </div>
+                            
+                            
+
+                        
+                        
+                            
+                        
+                        
+                                
+                        <button type="button" className="btn btn-primary">Save Update</button>
+
+
+                        
+                    </form>
+
+
+            {/* pics start */}
+                        
+                    <div class="md-form col-md-4">
+                        <div className="p-4">
+                            <div className="mb-4">
+                                <img src="https://pbs.twimg.com/profile_images/1025727974388248577/DS7n_5Yt_400x400.jpg" className="rounded mb-4" style={{width:"300px"}} alt="example placeholder avatar" />
+                            
+                            
+                            <input  style={{display:'none'}}
+                                type="file" 
+                                className="form-control" 
+                                name="userpics"
+                                onChange={this.handleUserPic} 
+                                ref={inputFile=>this.inputFile=inputFile}
+                                
+                                /> 
+                                <button  className="btn btn-light"  
+                                onClick={()=>this.inputFile.click()}>upload avater</button>
+                    
+                            </div>
+                        
+                        </div>
+                        </div>
+
+                {/* pics end */}
+
+        </div>
+                    
+
+
+            
+      
+
+            {/* edit from end */}
+            </div>
+               {/* <!-- Button --> */}
+                        <div className="text-center text-black">
+                            <a href="#" className="btn btn-outline text-dark" data-toggle="modal" data-target="#updateProfile">Edit profile</a>
+                            
+
+                            
+                            <a href="#" className="btn btn-outline text-dark" data-toggle="modal" data-target="#modalChangePass">Change password</a>
+                        </div>
+
+                        
+      <div className="modal-footer">
+        <button type="button" className="btn btn-outline-info waves-effect ml-auto" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
