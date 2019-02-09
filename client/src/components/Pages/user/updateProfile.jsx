@@ -3,6 +3,7 @@ import UserHeader from '../usersHeader'
 import {getOneUserA} from '../../apidata/api'
 import '../../assets/smalloader.css'
 import axios from 'axios'
+import avata from '../../assets/img/undraw_profile.svg'
 import {userProfile} from '../../apidata/api'
 export default class updateProfile extends Component {
    constructor(){
@@ -17,11 +18,11 @@ export default class updateProfile extends Component {
       bio:'',
       id:'',
       avaterchange:null,
-      avater:null,
+      avater:avata,
       updateinfo:'',
       uploadinfo:'',
       isLoading:false,
-      isLoadingUpload:false
+      isLoadingUpload:true
        }
 
    
@@ -44,6 +45,7 @@ export default class updateProfile extends Component {
 
     e.preventDefault()
   this.setState({isLoading:true})
+  
 
 //   const id = JSON.parse(localStorage.getItem('updateuserId'))
   const {id}= this.state
@@ -93,20 +95,14 @@ export default class updateProfile extends Component {
 handleUploadPic(e){
     e.preventDefault()
     this.setState({isLoadingUpload:true})
-    console.log(this.state.isLoadingUpload   +'    okoooo')
-     if(this.state.avaterchange==undefined || this.state.avater==null){
+    console.log(this.state.isLoadingUpload   + '    okoooo')
+     if( this.state.avaterchange==undefined||this.state.avaterchange==null ){
          this.setState({uploadinfo:'no image selected'})
-         this.setState({isLoadingUpload:false})
+         this.setState({isLoadingUpload:true})
          console.log('no file selected')
-     
- 
-     } else if(this.state.avaterchange==undefined ){
-        this.setState({uploadinfo:'error in network'})
-        this.setState({isLoadingUpload:false})
-
-     }else{
+     } else{
      console.log("click")
-     this.setState({isLoadingUpload:true})
+     this.setState({isLoadingUpload:false})
      const userpic = new FormData()
      userpic.append('avater',this.state.avaterchange, this.state.avaterchange.name)
      const {id} = this.state//JSON.parse(localStorage.getItem('userId'))
@@ -128,7 +124,7 @@ handleUploadPic(e){
      console.log("notfile"+ res.data.message)
 
      if(res.data.success===true){
-        this.setState({isLoadingUpload:false})
+        this.setState({isLoadingUpload:true})
          this.setState({
              uploadinfo:res.data.message,
              avater:res.data.userImgUrl
@@ -190,6 +186,8 @@ handleUploadPic(e){
                     this.props.history.push('/signin')
                 }else{
                        await this.setState({name:user.user.name.toUpperCase(), email: user.user.email, id:user.user._id,school:user.user.school,phone:user.user.phone,department:user.user.department,city:user.user.city, bio:user.user.bio,avater:user.user.avater,info:user.message})
+
+                       (this.state.avater===undefined ? this.setState({avater:avata}): null)
                         console.log(this.state.name +'set')
                 }  
                 }     
@@ -202,19 +200,75 @@ handleUploadPic(e){
 
   render() {
     const {name,email,id,updateinfo,phone,school,department,city,bio,avater ,uploadinfo} =this.state
-
+  const displayChangePix= ()=>{
+      console.log(avater)
+      document.getElementById("changepicwrapper").style.display="block"
+      document.getElementById("btnChangePics").style.display ="none"
+  }
     return (
       <div>
           <UserHeader/>
         <div className="container pt-5">
-              <h4 className="alert alert grey">update Profile</h4>
+              <h4 className="alert alert grey">Profile Setting</h4>
            {/* edit form */}
             
 
                 <div className="form-row" >
+
+
+             {/* pics start upload profile pic */}
+            
+        <div class="md-form col-md-4 mt-0">
+            <div className="p-2">
+                <div className="mb-4">
+                <img src= {avater} className="circle mb-2" style={{width:"300px", height:"250px",borderRadius:"50%"}} />
                 
-                <form className="col-md-6">
+                {/* change profile pic buton */}
                 
+                  <button  id="btnChangePics" className="btn btn-sm btn-primary" onClick={displayChangePix}>change profile pic</button>
+
+                  {/* select pix */}
+                 <section className="changepicwrapper" id ="changepicwrapper" style={{display:'none'}}>
+                 
+                        <input  style={{display:'block'}}
+                            type="file" 
+                            className="form-control mt-5" 
+                            name="userpics"
+                            onChange={this.handleUserPic} 
+                            title= 'select picture to upload'
+                            ref={inputFile=>this.inputFile=inputFile}
+                            
+                            /> 
+                            {/* make buton like input file */}
+                            {/* <button  className="btn btn-light"  
+                            onClick={()=>this.inputFile.click()}>select avater</button>
+                        */}
+                            {/*display info  */}
+                    {this.state.uploadinfo
+                    !=='' ?    <div id='infoo' className="alert alert-success">{uploadinfo} </div>:null}
+            
+
+                                
+                        {/* show loading */}
+                        <div style={{margin:'auto', width:'50%'}}>
+                                {this.state.isLoadingUpload!==true ? <div className="text-center ring-loader">uploading</div>:<button id="btnuploado" className="btnuploado btn btn-primary btn-sm" onClick={this.handleUploadPic}>uploadnow</button>
+                            }
+                            </div>
+                    </section>
+
+
+           
+                </div>
+            
+            </div>
+            </div>
+
+    {/* pics end */}
+
+                
+                <form className="col-md-4">
+            
+
                 <div className="form-group ">
                 
                     <input type="text" className="form-control" id="Name" placeholder="Name" value={name} onChange={this.handleUpdateName} />
@@ -271,46 +325,6 @@ handleUploadPic(e){
         </form>
 
 
-{/* pics start upload profile pic */}
-            
-        <div class="md-form col-md-4">
-            <div className="p-4">
-                <div className="mb-4">
-                <img src= {avater} className="rounded mb-4" style={{width:"300px"}} alt="chose placeholder avatar" />
-                
-                
-                <input  style={{display:'block'}}
-                    type="file" 
-                    className="form-control" 
-                    name="userpics"
-                    onChange={this.handleUserPic} 
-                    ref={inputFile=>this.inputFile=inputFile}
-                    
-                    /> 
-                    {/* make buton like input file */}
-                    {/* <button  className="btn btn-light"  
-                    onClick={()=>this.inputFile.click()}>select avater</button>
-                  */}
-                     {/*display info  */}
-            {this.state.uploadinfo
-            !=='' ?    <div id='infoo' className="alert alert-success">{uploadinfo} </div>:null}
-
-
-          
-                 {/* show loading */}
-                 <div style={{margin:'auto', width:'50%'}}>
-                        {this.state.isLoadingUpload===true ? <div className="text-center ring-loader">loading</div>:<button id="btnuploado" className="btnuploado btn btn-primary" onClick={this.handleUploadPic}>uploadnow</button>
-                    }
-                    </div>
-
-
-           
-                </div>
-            
-            </div>
-            </div>
-
-    {/* pics end */}
 
 </div>
         

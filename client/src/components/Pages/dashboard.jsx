@@ -59,7 +59,7 @@ export default class dashboard extends Component {
         <div className="navlink">
               
               <Link className="nav-link dlink" to="addproject">addproject</Link>
-                  <Link className="icon" to ="addproject">
+                  <Link className="icon " to ="addproject">
                   <i className="mdi mdi-note-plus-outline  icon"></i></Link>
               
         </div>

@@ -48,6 +48,7 @@ class UserProfile extends Component{
                     
                     }     
                     console.log("ok" + user)
+                    console.log(this.state.avater+ "  avvata")
 
              }
              if(!token){
@@ -75,15 +76,15 @@ class UserProfile extends Component{
         <div className="container">
 
                <div className="row">     
-                    
+                    <div    className="col-md-4 col-lg-4"></div>
                         {/* <!-- Card profile--></div> */}
-                    <div className="col-lg-5 col md-6 col-sm-12">
-                        <div className="card mt-3" >
+                    <div className="col-lg-5 col-md-6 col-sm-12">
+                        <div className="card mt-3 "  >
 
                         {/* <!-- Card image --> */}
-                           <div className="view overlay">
-                                <img className="card-img-top" src={avater} style={{height:'400px'}}/>
-                            <a href="#!">
+                           <div className="view overlay" style={{height:"200px"}}>
+                                <img className="card-img-top circle " src={avater} />
+                            <a href={`${avater}`}>
                             <div className="mask rgba-white-slight"></div>
                             </a>
                         </div>
@@ -103,7 +104,7 @@ class UserProfile extends Component{
                                 <li className="list-group-item"> <strong>School:&nbsp;</strong>{school}</li>
                                 <li className="list-group-item"> <strong>Department:&nbsp;</strong>{department}</li>
                                 <li className="list-group-item"> <strong>city:&nbsp;</strong>{city}</li>
-                                <li className="list-group m-3"> <strong></strong></li>
+                                <li className="list-group m-2"> <strong></strong></li>
                             </ul>
                                 </div>
                             <Link to={`updateprofile/${id}`}>  <button className="btn btn-outline text-dark">update profile</button></Link>
@@ -115,29 +116,11 @@ class UserProfile extends Component{
 
               
             </div>
-                    {/* end of 1st col */}
-                    {/* 2nd col */}
-                      {/* <!-- Button update profile --> */}
-
-                      <div className="col-lg-6">
 
 
-                            <a href="#" className="btn btn-outline-grey" data-toggle="modal" data-target="#updateProfile">Edit profile</a>
-
-
-
-
-
+                      
 
                             
-
-
-
-                            {/* end for edit pass modal */}
-                            
-                            <a href="#" className="btn btn-outline" data-toggle="modal" data-target="#modalChangePass">Change password</a>
-
-                        </div>
                      
                 </div>
             

@@ -77,8 +77,23 @@ export default class userNav extends Component {
         {/* <!-- Links --> */}
 
         <div className="my-0 mr-sm-2">
+{/*         
+        <Link to='/'><button onClick={this.handleLogout} className="btn btn-outline-light btn-sm my-0 waves-light"> Logout</button> </Link> */}
+
+        <div className="my-0 mr-sm-2">
+        {/* {this.state.usertoken!==null 
+        (<Link to='/'><button onClick={this.handleLogout} className="btn btn-outline-light btn-sm my-0 waves-light"> Logout</button> </Link>) */}
+        <div><a  className="mdi mdi-facebook mr-sm-2"></a>
         
-        <Link to='/'><button onClick={this.handleLogout} className="btn btn-outline-light btn-sm my-0 waves-light"> Logout</button> </Link>
+        <a className="mdi mdi-twitter mr-sm-2"></a>
+        
+        <a className="mdi mdi-instagram"></a></div>
+        {/* } */}
+        
+
+        
+        </div>
+        
         
         
         

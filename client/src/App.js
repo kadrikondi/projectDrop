@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import {Route,Switch} from 'react-router-dom'
 
-
 import './App.css';
 import './components/assets/mdb/css/mdb.min.css'
 
