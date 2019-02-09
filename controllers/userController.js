@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const config = require('../config/config');
 const Users = require('../models/user')
+const nodemailer =require('nodemailer')
+const crypto = require('crypto')
+const async = require('async')
 const emailExistence = require('email-existence')
 
  
@@ -73,7 +76,6 @@ exports.postLogin=(req,res)=>{
 
         const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
         if (!passwordIsValid) return res.status(401).json({ auth: false, token: null , message:`password incorect`});
-
 
 
 
@@ -265,4 +267,157 @@ exports.DeleteOne= async (req,res)=>{
 
   const users = await Users.findByIdAndRemove(req.params.id)
   res.json({message:"u just delete one user", user:users})
+}
+
+//forgetPassword
+//post 
+//route:/forgetpassword
+
+exports.sendForgetPasswordToken = async (req,res,next)=>{
+  const body=req.body;
+  if(!body.email){
+    res.json({message:'email is required'})
+  }
+console.log('start')
+   async.waterfall([
+     (done)=>{
+       
+      crypto.randomBytes(20,(err,buf)=>{
+       let token= buf.toString('hex');
+       done(err,token)
+     })
+    },
+    (token,done)=>{
+     //check user with email exist or not
+     
+      Users.findOne({email:req.body.email},(err,user)=>{
+        
+        
+        if(!user) return res.json({message:'No Accout with that email address exist'})
+        
+      console.log(user.email)
+        user.resetPasswordToken= token
+        user.resetPasswordExpire= Date.now() + (3600000*2)
+        user.save((err)=>{
+       done(err,token ,user)
+      
+      })
+
+
+      })
+    },
+    //nodemailler
+    (token,user,done)=>{
+      const smtpTransport= nodemailer.createTransport({
+        service:'Gmail',
+        
+        host: 'smtp.ethereal.email',// 'smtp.gmail.com',
+        port: 587,//465
+        secure: false, 
+        auth:{
+          user:'abdulkadri42@gmail.com',
+          pass:'kadzee222.'
+
+       }
+
+      })
+      var mailOptions = {
+        from: 'abdulkadri42@gmail.com',
+        to: user.email && 'kondipress@gmail.com',
+        subject: 'projectBox Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+
+      smtpTransport.sendMail(mailOptions,(err)=>{
+       res.json({status:'success', message:'An e-mail has been sent to ' + user.email + ' with further instructions.'})
+        done(err,'done')
+      });
+
+    }
+
+    
+    
+    
+    ],(err)=>{
+     if(err) return next(err)
+    })
+
+
+}
+//password reset
+
+exports.resetPasswordToken= async(req,res)=>{
+  // resetPasswordExpire:{$gt:Date.now()}
+  const body=req.body
+    if(!body.password){
+      res.json({message:'empty field new password required'})
+    }else if(body.password.length > 6){
+      res.json({message:'password must be upto 6 charater '})
+    }
+  async.waterfall([
+      (done)=>{
+    Users.findOne({resetPasswordToken:req.params.token },(err,user)=>{
+        if(err) return res.json({err ,message:'error'})
+        console.log(user)
+        console.log(req.params.token)
+          if(!user){
+            res.json({message:'Password reset token is invalid or has expired.'})
+          }else{
+        
+
+          user.password= req.body.password
+          user.resetPasswordExpire= undefined
+          user.resetPasswordToken=undefined
+          user.save((err)=>{
+            
+            // req.logIn(user,(err)=>{
+            //   done(err,user)
+            // })
+            
+            done(err,user)
+            res.json({message:'new password change'})
+          })
+        }
+
+        
+          
+
+        })
+      },
+      //nodemailler
+    (token,user,done)=>{
+      const smtpTransport= nodemailer.createTransport({
+        service:'Gmail',
+        
+        host: 'smtp.ethereal.email',
+        port: 587,
+        secure: false, 
+        auth:{
+          user:'abdulkadri42@gmail.com',
+          pass:'kadzee222.'
+
+       }
+
+      })
+      var mailOptions = {
+        from: 'abdulkadri42@gmail.com',
+        to: user.email,
+        subject: 'Your password  has been changed @projectBox',
+        text: 'Hello,\n\n' +
+          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+     
+      };
+
+      smtpTransport.sendMail(mailOptions,(err)=>{
+       res.json({status:'success', message:'sucess! Your paassword has changed'})
+        done(err,'done')
+      });
+
+    }
+
+
+  ])
 }
