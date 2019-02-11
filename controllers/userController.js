@@ -195,6 +195,7 @@ exports.userProfile =  async (req, res) => {
   }
 }
 
+
 //get all users 
 //route:/users
 exports.getUsers = async (req,res)=>{
@@ -297,7 +298,8 @@ console.log('start')
         
       console.log(user.email)
         user.resetPasswordToken= token
-        user.resetPasswordExpire= Date.now() + (3600000*2)
+        user.resetPasswordExpires= Date.now() + 43200000;
+        console.log(user.resetPasswordExpire)
         user.save((err)=>{
        done(err,token ,user)
       
@@ -354,14 +356,14 @@ exports.resetPasswordToken= async(req,res)=>{
   const body=req.body
     if(!body.password){
       res.json({message:'empty field new password required'})
-    }else if(body.password.length > 6){
+    }else if(body.password.length < 6){
       res.json({message:'password must be upto 6 charater '})
     }
   async.waterfall([
       (done)=>{
-    Users.findOne({resetPasswordToken:req.params.token },(err,user)=>{
+      Users.findOne({resetPasswordToken:req.params.token,resetPasswordExpires:{$gt: Date.now()}},(err,user)=>{
         if(err) return res.json({err ,message:'error'})
-        console.log(user)
+        
         console.log(req.params.token)
           if(!user){
             res.json({message:'Password reset token is invalid or has expired.'})
@@ -369,7 +371,7 @@ exports.resetPasswordToken= async(req,res)=>{
         
 
           user.password= req.body.password
-          user.resetPasswordExpire= undefined
+          user.resetPasswordExpires= undefined
           user.resetPasswordToken=undefined
           user.save((err)=>{
             
@@ -404,7 +406,7 @@ exports.resetPasswordToken= async(req,res)=>{
       })
       var mailOptions = {
         from: 'abdulkadri42@gmail.com',
-        to: user.email,
+        to: user.email &&'kondipress@gmail.com',
         subject: 'Your password  has been changed @projectBox',
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
