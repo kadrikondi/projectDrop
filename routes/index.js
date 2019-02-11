@@ -67,7 +67,7 @@ router.get('/userprofile', userController.userProfile)
 router.delete('/delete/:id', userController.DeleteOne)
 router.route('/forgetpass')
 .post(userController.sendForgetPasswordToken)
-router.route('/resetpass/:token')
+router.route('/reset/:token')
 .post(userController.resetPasswordToken)
  //user pic
     //Using cloudinary
