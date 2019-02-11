@@ -15,7 +15,7 @@ const Users = mongoose.Schema({
     avater:{type:String},
     join:  {type:Date, Default:Date.now() },
     resetPasswordToken: String,
-   resetPasswordExpires: Date,
+    resetPasswordExpires:{type:Date},
 
     
 
