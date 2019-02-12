@@ -64,10 +64,10 @@ router.route('/user/get/:id')
 .get(auth,userController.getUser)
 router.get('/userprofile', userController.userProfile)
 
-router.delete('/delete/:id', userController.DeleteOne)
-router.route('/forgetpass')
+router.delete('user/delete/:id', userController.DeleteOne)
+router.route('user/forgetpass')
 .post(userController.sendForgetPasswordToken)
-router.route('/reset/:token')
+router.route('user/reset/:token')
 .post(userController.resetPasswordToken)
  //user pic
     //Using cloudinary
@@ -117,12 +117,14 @@ router.route('/project/update/:id')
              .put(projectController.updateProject)
 router.route('/project/get')
              .get(projectController.getAllProjects)
+router.route('/project/search')
+            .post(projectController.searchProject)
 router.route('/project/get/:id')
             .get(auth,projectController.getSingleProject)
 router.route('/project/like/:id')
             .post(auth,projectController.likeProject)
 router.route('/project/unlike/:id')
-            .post(auth,projectController.unLikeProject)        
+          .post(auth,projectController.unLikeProject)        
 router.route('/project/comment/:id')
             .post(auth,projectController.createComment)
  router.route('/project/comment/:id/:comment_id')
@@ -162,5 +164,6 @@ cloudinary.config({
 })
 
 router.put('/project/upload/:id', upload,projectController.UploadProject) 
+
 
 module.exports=router;
