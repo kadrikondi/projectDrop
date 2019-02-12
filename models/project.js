@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+searchPlugin = require('mongoose-search-plugin');
 const Schema =mongoose.Schema
 
 const projectSchema = new Schema({
@@ -67,6 +68,9 @@ const projectSchema = new Schema({
     }
     
 
+})
+projectSchema.plugin(searchPlugin,{
+    fields:['topic','department','school','year']
 })
 
 module.exports = mongoose.model('project', projectSchema);
