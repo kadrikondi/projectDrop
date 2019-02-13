@@ -10,7 +10,7 @@ const pro =require('./proroute')
 const jwt=require('jsonwebtoken')
 const passport = require('passport')
 // const {cloudinaryApi} =require('../config/cloudinary')
-const projectController =require('../controllers/projectContorller')
+const projectController =require('../controllers/projectController')
 
 //file upload with multer
 const multer = require('multer')
