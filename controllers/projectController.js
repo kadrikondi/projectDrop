@@ -29,11 +29,11 @@ exports.createProject = async(req,res)=>{
 
  const newproject  =await new project({
      
-        topic:body.topic,
-        department:body.department,
-        school:body.school,
-        year:body.year,
-        summary:body.summary,
+        topic:body.topic.trim().toUpperCase(),
+        department:body.department.trim(),
+        school:body.school.trim(),
+        year:body.year.trim(),
+        summary:body.summary.trim(),
         // user:req.user.id,
         //  name:body.name,
         // avatar:body.avatar,
@@ -98,11 +98,13 @@ exports.getAllProjects = async (req,res)=>{
     const allproject = await project.find()
                         .sort({date:-1})
     if(!allproject) return res.json({message:`error users not found`})
+
     res.json({allproject:allproject})
    }
 
   
-//@controller:search a project
+//@controller:full text search using mongoose-search plugin
+//search a project
 //access :public
 //route:'/search'
 exports.searchProject=(req,res)=>{
@@ -122,7 +124,7 @@ exports.searchProject=(req,res)=>{
                let projectsResult=projects.results
                let totalCount=projects.totalCount
         
-            res.json({message:'it work',searched:projectsResult, NoofSearch:totalCount})
+            res.json({message:'success',searched:projectsResult, NoofSearch:totalCount})
         }
 
     }
@@ -133,7 +135,41 @@ exports.searchProject=(req,res)=>{
 
 
 }
-   //@controller: get a single project
+
+//@controller:search by department
+//route:proejct/search/department
+
+exports.departmentSearch=(req,res)=>{
+  project.find({department:req.params.department},(err,proj)=>{
+    if(err)return res.json({err,message:'error occurs'})
+//     let projectR=proj
+//      switch(projectR.length){
+//       case projectR.length > 0:
+//       res.json({project:projectR,message:'success'})
+//       break;
+//       case projectR.length ===0:
+      
+//       res.json({project:projectR,message:'No document'})
+// break;
+    //  }
+    if(proj.length >=1){
+        
+
+        res.json({project:proj, message:'success'})
+    }else{
+        res.json({message:'No Project document for this department yet! or write department name complete '})
+    }
+
+  })
+
+
+
+
+
+
+
+}
+//@controller: get a single project
 //@acess: private
 exports.getSingleProject = async (req,res)=>{
     const singleProject= await project.findById(req.params.id)

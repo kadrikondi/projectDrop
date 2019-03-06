@@ -69,12 +69,15 @@ exports.postLogin=(req,res)=>{
       res.json({message:'empty field'})
   } else{ 
 
+  if(!req.body.password){
+    res.json( {message:'No password provide'})
+  }
 
    Users.findOne({ email: req.body.email },  (err, user) =>{
     if (err) return res.status(500).json('Error on the server.');
      if (!user) return res.status(404).json({message:'No user found.'});
-
-        const passwordIsValid = bcrypt.compareSync(req.body.password, user.password);
+       
+        const passwordIsValid = bcrypt.compareSync(req.body.password, user.password)
         if (!passwordIsValid) return res.status(401).json({ auth: false, token: null , message:`password incorect`});
 
 
@@ -277,8 +280,8 @@ exports.DeleteOne= async (req,res)=>{
 exports.sendForgetPasswordToken = async (req,res,next)=>{
   const body=req.body;
   if(!body.email){
-    res.json({message:'email is required'})
-  }
+   return res.json({message:'email is required'})
+  }   
 console.log('start')
    async.waterfall([
      (done)=>{
@@ -291,20 +294,22 @@ console.log('start')
     (token,done)=>{
      //check user with email exist or not
      
-      Users.findOne({email:req.body.email},(err,user)=>{
+       Users.findOne({email:req.body.email},(err,user)=>{
         
         
-        if(!user) return res.json({message:'No Accout with that email address exist'})
-        
-      console.log(user.email)
-        user.resetPasswordToken= token
-        user.resetPasswordExpires= Date.now() + 43200000;
-        console.log(user.resetPasswordExpire)
-        user.save((err)=>{
-       done(err,token ,user)
-      
-      })
-
+        if(user){
+                  console.log(user.email)
+                  user.resetPasswordToken= token
+                user.resetPasswordExpires= Date.now() + 43200000;
+                  console.log(user.resetPasswordExpires)
+                  user.save((err)=>{
+                done(err,token ,user)
+                
+                })
+          }else{
+         return res.json({message:'No Accout with that email address exist'})
+          
+    }
 
       })
     },
@@ -355,42 +360,47 @@ exports.resetPasswordToken= async(req,res)=>{
   // resetPasswordExpire:{$gt:Date.now()}
   const body=req.body
     if(!body.password){
-      res.json({message:'empty field new password required'})
-    }else if(body.password.length < 6){
-      res.json({message:'password must be upto 6 charater '})
+      return res.json({message:'empty field new password required'})
     }
+    if(body.password.length < 6 ){
+     return res.json({message:'password must be greater than 6 and less  than 15 charaters '})
+    }
+  const newpassword=req.body.password.trim()
+ const hashedPasswordChanged = await bcrypt.hashSync(newpassword,10)
   async.waterfall([
+
       (done)=>{
       Users.findOne({resetPasswordToken:req.params.token,resetPasswordExpires:{$gt: Date.now()}},(err,user)=>{
         if(err) return res.json({err ,message:'error'})
         
         console.log(req.params.token)
-          if(!user){
-            res.json({message:'Password reset token is invalid or has expired.'})
+          if(user){
+            
+                user.password= hashedPasswordChanged
+                user.resetPasswordExpires= undefined
+                user.resetPasswordToken=undefined
+                user.save((err)=>{
+                  
+                  // req.logIn(user,(err)=>{
+                  //   done(err,user)
+                  // })
+                  
+                  done(err,user)
+                //  res.json({message:'new password change ttt'})
+                })
+                
           }else{
-        
-
-          user.password= req.body.password
-          user.resetPasswordExpires= undefined
-          user.resetPasswordToken=undefined
-          user.save((err)=>{
-            
-            // req.logIn(user,(err)=>{
-            //   done(err,user)
-            // })
-            
-            done(err,user)
-            res.json({message:'new password change'})
-          })
-        }
+            return res.json({message:'Password reset token is invalid or has expired.'})
+              }
 
         
-          
-
+  
         })
+      
       },
       //nodemailler
-    (token,user,done)=>{
+    (user, done)=>{
+      console.log('maill')
       const smtpTransport= nodemailer.createTransport({
         service:'Gmail',
         
@@ -412,14 +422,17 @@ exports.resetPasswordToken= async(req,res)=>{
           'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
      
       };
-
+        
       smtpTransport.sendMail(mailOptions,(err)=>{
-       res.json({status:'success', message:'sucess! Your paassword has changed'})
-        done(err,'done')
+        console.log('konba')
+       res.json({status:'success', message:'sucess! Your password has changed'})
+        console.log('maile end')
+       done(err,'done')
       });
 
     }
 
 
   ])
+
 }
