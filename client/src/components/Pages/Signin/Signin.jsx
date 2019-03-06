@@ -4,7 +4,8 @@ import './Signin.css'
 import Loader from '../../assets/loader'
 import {Link} from 'react-router-dom';
 
-class Sigin extends Component{
+
+class Signin extends Component{
 
   constructor(){
     super()
@@ -170,4 +171,4 @@ render(){
 }
 
 
-export default Sigin
+export default Signin

@@ -35,18 +35,18 @@ let id ='ok'
 
   render(){
   return (
-    <div>
-      <nav class="nav nav-pills nav-fill  pink">
+    <div  className= ''>
+      <nav className="nav nav-pills nav-fill  pink">
       
-  <Link  class="nav-item nav-link btn btn-outline" to={`/dashboard`}>Dashboard</Link>
+  <Link  className="nav-item nav-link btn btn-outline" to={`/dashboard`}>Dashboard</Link>
   
-  <Link class="nav-item nav-link btn btn-outline" to="/projects">Project feed</Link >
-  <Link class="nav-item nav-link btn btn-outline" to="/userprofile">profile</Link >
+  <Link className="nav-item nav-link btn btn-outline" to="/projects">Project feed</Link >
+  <Link className="nav-item nav-link btn btn-outline" to="/userprofile">profile</Link >
     
 
 
 
-  <Link to='/'  class="nav-item nav-link btn btn-outline "><button onClick={this.handleLogout} className="btn btn-outline-light btn-sm my-0 mr-0 waves-light"> Logout</button> 
+  <Link to='/'  className="nav-item nav-link btn btn-outline "><button onClick={this.handleLogout} className="btn btn-outline-light btn-sm my-0 mr-0 waves-light"> Logout</button> 
         
   </Link>
 </nav>

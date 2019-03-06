@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import {Link} from 'react-router-dom'
 import './projects.css'
 import UserHeader from '../usersHeader'
+import bookList from '../../assets/img/library.svg'
 import pix from '../../assets/img/project.jpeg'
 import axios from 'axios';
+import Search from './search'
 
 
 
@@ -20,10 +22,19 @@ class Projects extends Component{
         year:'',
         summary:'',
         allproject:[],
-        token:''
+        token:'',
+        searchText:''
         
       }
+      this.handleSearch= this.handleSearch.bind(this)
     }
+
+     handleSearch(e){
+       this.setState({searchText:e.target.value})
+       console.log(this.state.searchText)
+     }
+
+
        componentDidMount(){
         const token= localStorage.getItem('token')
         this.setState({token})
@@ -56,40 +67,52 @@ class Projects extends Component{
 
     render(){
 
- const{allproject}=this.state
+ const allproject =this.state.allproject.filter((project)=>{
+   let search= this.state.searchText
+   return project.topic.toLowerCase().search(this.state.searchText.toLowerCase()) !== -1;
+  //  indexOf(this.state.searchText.toLowerCase())!==-1;
+   
+ })
  const {token}= this.state
 return(
           
-    <div className="allprojects">
+    <div>
+    
     {this.state.token ? <UserHeader/>:<div></div>}
-        <h1 id="head">All project</h1>
-      
+       <div className='row '>
+       
+            
           
           
         
+      <div className="col-lg-9 mt-5 container-fluid">
         {/* carddeck */}
        
        
-       
-        <div className="card-deck"  >
+        <div className="card-deck row"  >
         
 
 { allproject ?
   allproject.map((pro ,index)=>{
   const{_id,topic,department,school,year,summary,date,projectdoc,comments,user}=pro
-  return (<div className="col-lg-4 col-sm-12 col-xm-12  col-md-6" key={_id}>
+  return (
+    // className="col-lg-3 col-sm-6 col-xm-12  col-md-4"
+  <div  className="card "  className="col-lg-3 col-sm-6 col-xm-12  col-md-4"  key={_id}>
    <div className="card card-cascade" style={{marginBottom:'20px'}} >
 
   {/* <!-- Card title --> */}
   <div className="card-header default">
-  
+
+  <div className="card-img-top">
+   <img src={bookList} alt="" style={{width:'100px'}}/>
+     </div>
     {/* <!-- Title --> */}
-    <h4 className="card-header-title text-left  p-0" style={{color:'#000000' ,margin:'0px;',padding:'0px;'}}> {topic}</h4>
+    <h6 className="card-header-title text-left  p-0" style={{color:'#000000' ,margin:'0px;',padding:'0px;' ,textTransform:'uppercase'}}> {topic}</h6>
     {/* <!-- Text --> */}
-    <p className="mb-0 text-right">{department}</p>
+    <p className=" mb-0 text-right" style={{fontStyle:'italic'}}>{department}</p>
   
   </div>
-  
+    
   {/* <!-- Card content --> */}
   <div className="card-body card-body-cascade text-center">
   
@@ -126,7 +149,25 @@ return(
 </div>
 {/* carddeck end */}
  
+ </div>
 
+ <div className="col-lg-3">
+       {/* {<Search /> } */}
+      
+
+
+       <form   className="form-inline">
+            <div className="md-form my-0">
+          <input className="form-control " type="text"
+            onChange={this.handleSearch} value={this.state.searchText} placeholder="Search project topics" aria-label="Search"  />
+      </div>
+      </form>
+       
+       </div>
+    
+ {/* row */}
+ </div>
+ {/* main */}
     </div>
 
       
