@@ -6,7 +6,7 @@
     "axios": "^0.18.0",
     "mdbreact": "^4.11.0",
     "mdreact": "^0.1.5",
-    "react": "^16.4.2",
+    "react": "^16.4.2", 
     "react-dom": "^16.4.2",
     "react-particles-js": "^2.3.0",
     "react-router-dom": "^4.3.1",

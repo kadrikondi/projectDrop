@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom'
 import './projects.css'
 import UserHeader from '../usersHeader'
 import bookList from '../../assets/img/library.svg'
-import pix from '../../assets/img/project.jpeg'
 import axios from 'axios';
 import Search from './search'
 
@@ -47,7 +46,7 @@ class Projects extends Component{
         }
         })
        
-       .then(res=>res.json())
+       .then(res => res.json())
      
        .then(result=>{
        
