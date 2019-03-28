@@ -27,7 +27,8 @@ app.use(passport.initialize());
 require('./config/passport')(passport);
 
 
-
+app.use(express.static(path.resolve(__dirname, './client/build')))
+app.use(express.static(path.resolve(__dirname, 'build', 'index.html')))
 console.log()
 const port = process.env.PORT|| 8000;
 
