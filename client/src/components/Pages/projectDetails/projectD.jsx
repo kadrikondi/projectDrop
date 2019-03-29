@@ -82,7 +82,7 @@ async componentDidMount(){
     // console.log(this.state.project + 'ok')
 // }
 else{
-      alert('You need to login to view project Details')
+      //alert('You need to login to view project Details')
         this.props.history.push('/signin')
 }
 }
